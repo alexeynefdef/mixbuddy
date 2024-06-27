@@ -1,0 +1,4 @@
+spotify:
+  client-id: beaac1b9f9974cefa22604a46143ce2c
+  client:secret: 802ca7bf22444e7d8a9336e66375dc6e
+  callback-url: http://localhost:8080/flowtherock/api/callback
