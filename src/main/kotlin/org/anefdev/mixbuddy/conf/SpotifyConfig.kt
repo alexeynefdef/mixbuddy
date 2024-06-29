@@ -1,22 +1,20 @@
 package org.anefdev.mixbuddy.conf
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
+import org.springframework.boot.context.properties.ConfigurationProperties
 
-@Configuration
-class SpotifyConfig {
-
+@ConfigurationProperties
+class SpotifyConfig(
     @Value("\${spotify.client-id}")
-    lateinit var clientId: String
+    val clientId: String,
 
     @Value("\${spotify.client-secret}")
-    lateinit var clientSecret: String
+    val clientSecret: String,
 
     @Value("\${spotify.callback-url}")
-    lateinit var callbackUrl: String
+    val callbackUrl: String,
 
     @Value("\${spotify.redirect-url-web-client}")
-    lateinit var redirectWebClient: String
-
-}
+    val redirectWebClient: String
+)
 
