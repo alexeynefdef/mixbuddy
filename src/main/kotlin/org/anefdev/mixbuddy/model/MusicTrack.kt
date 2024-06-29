@@ -11,6 +11,4 @@ data class MusicTrack(
     var mode: String? = null,
     var camelot: String? = null,
     var matched: Boolean = false,
-    var previewUrl: String? = null) {
-
-}
+    var previewUrl: String? = null)

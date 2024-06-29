@@ -3,8 +3,6 @@ package org.anefdev.mixbuddy.service
 import org.anefdev.mixbuddy.model.MusicPlaylist
 import org.anefdev.mixbuddy.model.MusicTrack
 import org.anefdev.mixbuddy.model.SpotifyUser
-import lombok.NoArgsConstructor
-import lombok.SneakyThrows
 import org.anefdev.mixbuddy.conf.SpotifyConfig
 import org.anefdev.mixbuddy.util.PlaylistParser
 import org.slf4j.Logger
@@ -20,7 +18,6 @@ import java.net.URI
 import java.util.*
 
 @Service
-@NoArgsConstructor
 class MixBuddyService(
     private val config: SpotifyConfig,
     private val playlistParser: PlaylistParser
@@ -71,7 +68,6 @@ class MixBuddyService(
      * Sync
      * @param code Authorization code for Spotify
      */
-    @SneakyThrows
     fun setAuthorizationToken(code: String) {
         LOGGER.info("setAuthorizationToken [ Get authorization token ...")
         LOGGER.info("setAuthorizationToken [ Authorization code: $code ]")
@@ -92,7 +88,6 @@ class MixBuddyService(
      * Sync
      * @return List of user's playlists
      */
-    @SneakyThrows
     fun loadAllUsersPlaylists(): List<MusicPlaylist>? {
         LOGGER.info("loadAllUsersPlaylists [ Loading all user's playlists ... ]")
         val allUserPlaylists: List<MusicPlaylist>
@@ -118,7 +113,6 @@ class MixBuddyService(
      * @param playlistId ID of the playlist
      * @return List of MusicTrack playlist
      */
-    @SneakyThrows
     fun loadPlaylist(playlistId: String): List<MusicTrack>? {
         LOGGER.info("loadPlaylist [ Loading playlist ... ]")
         LOGGER.info("loadPlaylist [ Playlist with ID: $playlistId ]")
@@ -163,7 +157,6 @@ class MixBuddyService(
      * @param trackId ID of the track
      * @return Track song info
      */
-    @SneakyThrows
     private fun loadTrackInfo(trackId: String): Track {
         LOGGER.info("loadTrackInfo [ Loading song info ... ]")
         val getTrackRequest = spotifyApi.getTrack(trackId).build()
@@ -181,7 +174,6 @@ class MixBuddyService(
      * @param trackId ID of the track
      * @return MusicTrack audio analysis
      */
-    @SneakyThrows
     private fun loadTrackAnalysis(trackId: String): MusicTrack {
         LOGGER.info("loadTrackAnalysis [ Loading audio analysis ... ]")
         val getTrackAnalysisRequest = spotifyApi.getAudioAnalysisForTrack(trackId).build()
@@ -219,7 +211,6 @@ class MixBuddyService(
      * Sync
      * @return current user's data
      */
-    @SneakyThrows
     fun loadUserData(): SpotifyUser? {
         LOGGER.info("loadUserData [ Loading user data ...]")
 

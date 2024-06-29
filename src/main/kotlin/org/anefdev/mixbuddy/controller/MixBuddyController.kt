@@ -5,7 +5,6 @@ import org.anefdev.mixbuddy.conf.SpotifyConfig
 import org.anefdev.mixbuddy.model.MusicTrack
 import org.anefdev.mixbuddy.model.SpotifyUser
 import org.anefdev.mixbuddy.service.MixBuddyService
-import lombok.SneakyThrows
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -21,7 +20,6 @@ class MixBuddyController(private val config: SpotifyConfig,
     private val LOGGER: Logger = LoggerFactory.getLogger(MixBuddyController::class.java)
 
     @GetMapping(path = ["/authorize"])
-    @SneakyThrows
     fun authorize(): ModelAndView {
         LOGGER.info("New login with Spotify ...")
         return ModelAndView("redirect:" + service.getAuthorizationCodeUri().toString())
@@ -48,14 +46,12 @@ class MixBuddyController(private val config: SpotifyConfig,
     }
 
     @GetMapping(path = ["/playlist/load"])
-    @SneakyThrows
     fun loadPlaylist(@RequestParam(value = "playlistId") playlistId: String?): List<MusicTrack>? {
         val trackList = service.loadPlaylist(playlistId.toString()).orEmpty()
         return trackList
     }
 
     @GetMapping(path = ["/playlist/sort"])
-    @SneakyThrows
     fun sort(@RequestParam(value = "trackId") trackId: String?): List<MusicTrack> {
         return service.sortPlaylist(trackId)
     }
