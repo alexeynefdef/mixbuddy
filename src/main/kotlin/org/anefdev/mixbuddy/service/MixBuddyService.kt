@@ -30,7 +30,16 @@ class MixBuddyService(
     private var allPlaylists: List<MusicPlaylist>? = null
     private var playlistParsed: List<MusicTrack>? = null
     private var currentUser: SpotifyUser? = null
-    private lateinit var spotifyApi: SpotifyApi
+    private val spotifyApi: SpotifyApi = initSpotifyAPI()
+
+    private final fun initSpotifyAPI(): SpotifyApi {
+        val spotifyApi = SpotifyApi.Builder()
+            .setClientId(config.clientId)
+            .setClientSecret(config.clientSecret)
+            .setRedirectUri(SpotifyHttpManager.makeUri(config.callbackUrl))
+            .build()
+        return spotifyApi
+    }
 
     /**
      * Gets URI for authorization with Spotify.
@@ -40,13 +49,6 @@ class MixBuddyService(
      */
     fun getAuthorizationCodeUri(): URI {
         LOGGER.info("getAuthorisationCodeURI [ Get authorization code URI ... ]")
-        val CALLBACK_URI = SpotifyHttpManager.makeUri(config.callbackUrl)
-
-        this.spotifyApi = SpotifyApi.Builder()
-            .setClientId(config.clientId)
-            .setClientSecret(config.clientSecret)
-            .setRedirectUri(CALLBACK_URI)
-            .build()
 
         val authorizationCodeUriRequest =
             spotifyApi.authorizationCodeUri()

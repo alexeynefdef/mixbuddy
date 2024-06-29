@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class SpotifyConfig {
 
-    @Value("\${spotify.client-secret}")
+    @Value("\${spotify.client-id}")
     lateinit var clientId: String
 
     @Value("\${spotify.client-secret}")
@@ -14,6 +14,9 @@ class SpotifyConfig {
 
     @Value("\${spotify.callback-url}")
     lateinit var callbackUrl: String
+
+    @Value("\${spotify.redirect-url-web-client}")
+    lateinit var redirectWebClient: String
 
 }
 

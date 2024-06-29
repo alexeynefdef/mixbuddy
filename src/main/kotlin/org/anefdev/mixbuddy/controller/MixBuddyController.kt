@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView
 
 @RestController
 @RequestMapping("/flowtherock/api")
+@CrossOrigin("*")
 class MixBuddyController(private val config: SpotifyConfig,
                          private val service: MixBuddyService) {
 
@@ -23,7 +24,7 @@ class MixBuddyController(private val config: SpotifyConfig,
     @SneakyThrows
     fun authorize(): ModelAndView {
         LOGGER.info("New login with Spotify ...")
-        return ModelAndView("redirect:" + service.getAuthorizationCodeUri())
+        return ModelAndView("redirect:" + service.getAuthorizationCodeUri().toString())
     }
 
     @GetMapping(path = ["/callback"])
@@ -32,7 +33,7 @@ class MixBuddyController(private val config: SpotifyConfig,
         if (code != null) {
             service.setAuthorizationToken(code)
         }
-        return ModelAndView("redirect:${config.callbackUrl}")
+        return ModelAndView("redirect:${config.redirectWebClient}")
     }
 
     @GetMapping(path = ["/user"])
