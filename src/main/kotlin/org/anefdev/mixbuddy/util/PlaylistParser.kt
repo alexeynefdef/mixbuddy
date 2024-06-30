@@ -1,5 +1,6 @@
 package org.anefdev.mixbuddy.util
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.anefdev.mixbuddy.model.MusicPlaylist
 import org.anefdev.mixbuddy.model.MusicTrack
 import org.springframework.stereotype.Component
@@ -9,20 +10,24 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack
 import se.michaelthelin.spotify.model_objects.specification.Track
 import kotlin.math.abs
 
+private val logger = KotlinLogging.logger {}
+
 @Component
 class PlaylistParser {
 
     fun getTrackListNoMetaData(playlist: List<PlaylistTrack>): List<MusicTrack> {
-        return playlist.stream().map { playlistTrack: PlaylistTrack ->
+
+        logger.info { "getTrackListNoMetaData [ Getting a track list without metadata ... ]" }
+
+        return playlist.stream().map { playlistTrack ->
             val musicTrack = MusicTrack()
-            val track = playlistTrack.track
-            musicTrack.id = track.id
+            musicTrack.id = playlistTrack.track.id
             musicTrack
         }.toList()
     }
 
     fun getAllPlaylists(playlists: List<PlaylistSimplified>): List<MusicPlaylist> {
-        return playlists.stream().map { playlist: PlaylistSimplified ->
+        return playlists.stream().map { playlist ->
             val musicPlaylist = MusicPlaylist()
             musicPlaylist.id = playlist.id
             musicPlaylist.title = playlist.name

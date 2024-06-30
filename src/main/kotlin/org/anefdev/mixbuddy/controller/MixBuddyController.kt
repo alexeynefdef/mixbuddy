@@ -1,15 +1,15 @@
 package org.anefdev.mixbuddy.controller
 
-import org.anefdev.mixbuddy.model.MusicPlaylist
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.anefdev.mixbuddy.conf.SpotifyConfig
+import org.anefdev.mixbuddy.model.MusicPlaylist
 import org.anefdev.mixbuddy.model.MusicTrack
 import org.anefdev.mixbuddy.model.SpotifyUser
 import org.anefdev.mixbuddy.service.MixBuddyService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
+private val logger = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/flowtherock/api")
@@ -17,17 +17,15 @@ import org.springframework.web.servlet.ModelAndView
 class MixBuddyController(private val config: SpotifyConfig,
                          private val service: MixBuddyService) {
 
-    private val LOGGER: Logger = LoggerFactory.getLogger(MixBuddyController::class.java)
-
     @GetMapping(path = ["/authorize"])
     fun authorize(): ModelAndView {
-        LOGGER.info("New login with Spotify ...")
+        logger.info { "New login with Spotify ..." }
         return ModelAndView("redirect:" + service.getAuthorizationCodeUri().toString())
     }
 
     @GetMapping(path = ["/callback"])
     fun callback(@RequestParam(value = "code") code: String?): ModelAndView {
-        LOGGER.info("Get authorization token ...")
+        logger.info { "Get authorization token ..." }
         if (code != null) {
             service.setAuthorizationToken(code)
         }
@@ -36,23 +34,26 @@ class MixBuddyController(private val config: SpotifyConfig,
 
     @GetMapping(path = ["/user"])
     fun getUserData(): SpotifyUser? {
-        LOGGER.info("Get user data ...")
+        logger.info { "Get user data ..." }
         return service.loadUserData()
     }
 
     @GetMapping(path = ["/playlists"])
     fun getPlaylists(): List<MusicPlaylist>? {
+        logger.info { "Get user playlists ..." }
         return service.loadAllUsersPlaylists()
     }
 
     @GetMapping(path = ["/playlist/load"])
     fun loadPlaylist(@RequestParam(value = "playlistId") playlistId: String?): List<MusicTrack>? {
+        logger.info { "Load playlist ..." }
         val trackList = service.loadPlaylist(playlistId.toString()).orEmpty()
         return trackList
     }
 
     @GetMapping(path = ["/playlist/sort"])
     fun sort(@RequestParam(value = "trackId") trackId: String?): List<MusicTrack> {
+        logger.info { "Sort playlist ..." }
         return service.sortPlaylist(trackId)
     }
 

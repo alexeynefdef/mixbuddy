@@ -5,19 +5,24 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.5</version>
+		<version>3.3.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>kotlin-demo</artifactId>
+	<groupId>org.anefdev</groupId>
+	<artifactId>mixbuddy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>kotlin-demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>mixbuddy</name>
+	<description>Web App for better mixing experience and creating the playlists using Spotify API</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<kotlin.version>2.0.0</kotlin.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>io.github.oshai</groupId>
+			<artifactId>kotlin-logging-jvm</artifactId>
+			<version>5.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>se.michaelthelin.spotify</groupId>
 			<artifactId>spotify-web-api-java</artifactId>
@@ -34,21 +39,6 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>2.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>2.0.3</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
@@ -57,11 +47,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-stdlib-jdk8</artifactId>
-			<version>${kotlin.version}</version>
-		</dependency>
+
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
@@ -105,7 +91,7 @@
 						<plugin>spring</plugin>
 						<plugin>jpa</plugin>
 					</compilerPlugins>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>17</jvmTarget>
                 </configuration>
 				<dependencies>
 					<dependency>
