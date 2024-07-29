@@ -21,7 +21,7 @@ import java.util.*
 private val logger = KotlinLogging.logger {}
 
 @Service
-class MixBuddyService(
+class MixbuddyService(
     private val config: SpotifyConfig,
     private val playlistParser: PlaylistParser
 ) {
@@ -96,9 +96,12 @@ class MixBuddyService(
     fun loadAllUsersPlaylists(): List<MusicPlaylist>? {
         logger.info { "loadAllUsersPlaylists [ Loading all user's playlists ... ]" }
         val allUserPlaylists: List<MusicPlaylist>
-        val currentUserID = currentUser?.id
+
+        val currentUser = this.loadUserData()
+        val userId = currentUser?.id
+
         val getListOfUsersPlaylistsRequest = spotifyApi
-            .getListOfUsersPlaylists(currentUserID)
+            .getListOfUsersPlaylists(userId)
             .build()
         val playlistSimplifiedPaging = getListOfUsersPlaylistsRequest.execute()
         val allUserPlaylistsSimple = Arrays.stream(playlistSimplifiedPaging.items).toList()

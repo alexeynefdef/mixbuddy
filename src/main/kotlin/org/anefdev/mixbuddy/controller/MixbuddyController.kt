@@ -6,7 +6,7 @@ import org.anefdev.mixbuddy.model.MusicPlaylist
 import org.anefdev.mixbuddy.model.MusicTrack
 import org.anefdev.mixbuddy.model.SongIds
 import org.anefdev.mixbuddy.model.SpotifyUser
-import org.anefdev.mixbuddy.service.MixBuddyService
+import org.anefdev.mixbuddy.service.MixbuddyService
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import java.net.URI
@@ -14,10 +14,10 @@ import java.net.URI
 private val logger = KotlinLogging.logger {}
 
 @RestController
-@RequestMapping("/flowtherock/api")
+@RequestMapping("/mixbuddy/api")
 @CrossOrigin("*")
-class MixBuddyController(private val config: SpotifyConfig,
-                         private val service: MixBuddyService) {
+class MixbuddyController(private val config: SpotifyConfig,
+                         private val service: MixbuddyService) {
 
     @GetMapping(path = ["/authorize"])
     fun authorize(): ModelAndView {
