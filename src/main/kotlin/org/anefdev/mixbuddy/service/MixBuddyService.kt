@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.anefdev.mixbuddy.conf.SpotifyConfig
 import org.anefdev.mixbuddy.model.MusicPlaylist
 import org.anefdev.mixbuddy.model.MusicTrack
+import org.anefdev.mixbuddy.model.SongIds
 import org.anefdev.mixbuddy.model.SpotifyUser
 import org.anefdev.mixbuddy.util.PlaylistParser
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ import se.michaelthelin.spotify.enums.AuthorizationScope
 import se.michaelthelin.spotify.model_objects.specification.Paging
 import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack
 import se.michaelthelin.spotify.model_objects.specification.Track
+import java.io.File
 import java.net.URI
 import java.util.*
 
@@ -28,6 +30,7 @@ class MixBuddyService(
     private var playlistParsed: List<MusicTrack>? = null
     private var currentUser: SpotifyUser? = null
     private val spotifyApi: SpotifyApi = initSpotifyAPI()
+    private val playlistDescription: String = "This playlist created by mixbuddy app."
 
     private final fun initSpotifyAPI(): SpotifyApi {
         val spotifyApi = SpotifyApi.Builder()
@@ -51,6 +54,9 @@ class MixBuddyService(
             spotifyApi.authorizationCodeUri()
                 .scope(
                     AuthorizationScope.USER_LIBRARY_READ,
+                    AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
+                    AuthorizationScope.PLAYLIST_MODIFY_PRIVATE,
+                    AuthorizationScope.USER_LIBRARY_MODIFY,
                     AuthorizationScope.USER_READ_PRIVATE,
                     AuthorizationScope.USER_READ_EMAIL
                 )
@@ -78,8 +84,7 @@ class MixBuddyService(
         spotifyApi.accessToken = authorizationCodeCredentials.accessToken
         spotifyApi.refreshToken = authorizationCodeCredentials.refreshToken
 
-        logger.info { "setAuthorizationToken [ Access token: " + spotifyApi.accessToken + " ]" }
-        logger.info { "setAuthorizationToken [ Refresh token: " + spotifyApi.refreshToken + " ]" }
+        logger.info { "setAuthorizationToken [ OK ]" }
     }
 
     /**
@@ -100,7 +105,6 @@ class MixBuddyService(
         allUserPlaylists = playlistParser.getAllPlaylists(allUserPlaylistsSimple)
 
         this.allPlaylists = allUserPlaylists
-        logger.info { "loadAllUsersPlaylists [ Playlists count: " + allPlaylists!!.size + " ]" }
         logger.info { "loadAllUsersPlaylists [ OK ]" }
 
         return this.allPlaylists
@@ -151,6 +155,47 @@ class MixBuddyService(
     }
 
     /**
+     * Creates new playlist in User´s library by passed List of Song IDs.
+     * <br></br>
+     * Async
+     * @param songIds IDs of the songs to add
+     * @return playlist URI
+     */
+    fun createNewPlaylist(songIds: SongIds): URI {
+
+        logger.info { "createNewPlaylist [ Creating new playlist ... ]" }
+
+        val createPlaylistRequest = spotifyApi.createPlaylist(this.currentUser!!.id, "mixbuddy playlist")
+        createPlaylistRequest.public_(true)
+        createPlaylistRequest.description(playlistDescription)
+        val playlist = createPlaylistRequest.build().execute()
+        val songUris = songIds.songIds?.map { track -> spotifyApi.getTrack(track).build().execute().uri}
+
+        if (songUris != null) {
+            spotifyApi.addItemsToPlaylist(playlist.id, songUris.toTypedArray()).build().execute()
+        }
+
+        logger.info { "createNewPlaylist [ OK ]" }
+
+        logger.info { playlist.toString() }
+        return URI.create(playlist.externalUrls.get("spotify"))
+
+    }
+
+    private fun convertFileToByteArray(filePath: String): ByteArray {
+        val file = File(filePath)
+        val contentBuilder = StringBuilder()
+
+        file.reader().use { reader ->
+            reader.forEachLine { line ->
+                contentBuilder.append(line).append("\n")
+            }
+        }
+
+        return contentBuilder.toString().toByteArray()
+    }
+
+    /**
      * Loads song info by passed track ID.
      * <br></br>
      * Async
@@ -162,7 +207,6 @@ class MixBuddyService(
         val getTrackRequest = spotifyApi.getTrack(trackId).build()
         val trackFuture = getTrackRequest.executeAsync()
         val track = trackFuture.join()
-        logger.info { "loadTrackInfo [ Song: $track ]" }
         logger.info { "loadTrackInfo [ OK ]" }
         return track
     }
@@ -179,7 +223,6 @@ class MixBuddyService(
         val getTrackAnalysisRequest = spotifyApi.getAudioAnalysisForTrack(trackId).build()
         val audioAnalysisFuture = getTrackAnalysisRequest.executeAsync()
         val audioAnalysis = audioAnalysisFuture.join()
-        logger.info { "loadTrackAnalysis [ Audio analysis: $audioAnalysis ]" }
         logger.info { "loadTrackAnalysis [ OK ]" }
         return playlistParser.convertTrackAnalysisToTrack(audioAnalysis)
     }
@@ -227,7 +270,6 @@ class MixBuddyService(
             )
         }
 
-        logger.info { "loadUserData [ Current user: " + this.currentUser + "]" }
         logger.info { "loadUserData [ OK ]" }
 
         return this.currentUser

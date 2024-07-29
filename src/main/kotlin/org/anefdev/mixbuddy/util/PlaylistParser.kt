@@ -32,7 +32,7 @@ class PlaylistParser {
             musicPlaylist.id = playlist.id
             musicPlaylist.title = playlist.name
             musicPlaylist.count = playlist.tracks.total
-            musicPlaylist.imageUrl = playlist.images[0].url
+            musicPlaylist.imageUrl = playlist.images[0].url!!
             musicPlaylist
         }.toList()
     }
