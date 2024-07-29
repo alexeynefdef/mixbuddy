@@ -1,0 +1,5 @@
+spotify:
+  client-id: 
+  client:secret:
+  callback-url: http://localhost:8080/flowtherock/api/callback
+  redirect-url-web-client: https://alexeynefdef.github.io/index.html
